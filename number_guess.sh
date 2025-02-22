@@ -67,3 +67,11 @@ GUESSING_MACHINE(){
   fi
 
 }
+
+echo -e "\nGuess the secret number between 1 and 1000:"
+GUESSING_MACHINE
+
+# insert data from game
+INSERTED_GAME=$($PSQL "INSERT INTO games (user_id, guesses) VALUES ($USER_ID, $TRIES)")
+PLURAL_TRIES=$(if [[ $TRIES -eq 1 ]]; then echo "try"; else echo "tries"; fi)
+echo -e "\nYou guessed it in $TRIES tries. The secret number was $SECRET_NUMBER. Nice job!"
