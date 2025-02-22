@@ -27,3 +27,43 @@ else
   GUESSES=$(if [[ $BEST_GAME -eq 1 ]]; then echo "guess"; else echo "guesses"; fi)
   echo -e "\nWelcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
+
+# Grab user_id
+USER_ID=$($PSQL "SELECT user_id FROM users WHERE username = '$USERNAME'")
+
+TRIES=1
+GUESS=0
+
+GUESSING_MACHINE(){
+
+  read GUESS
+
+
+  while [[ $GUESS =~ ^[+-]?[0-9]+$ && ! $GUESS -eq $SECRET_NUMBER ]]
+  do
+
+    TRIES=$(expr $TRIES + 1)
+
+    if [[ $GUESS -gt $SECRET_NUMBER ]]
+    then
+
+      echo -e "\nIt's lower than that, guess again:"
+      read GUESS
+
+    elif [[ $GUESS -lt $SECRET_NUMBER ]]
+    then
+
+      echo -e "\nIt's higher than that, guess again:"
+      read GUESS
+
+    fi
+  done
+
+  if [[ ! $GUESS =~ ^[0-9]+$ ]]
+  then
+      echo -e "\nThat is not an integer, guess again:"
+      TRIES=$(expr $TRIES + 1)
+      GUESSING_MACHINE
+  fi
+
+}
